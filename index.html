@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>楽天商品タイトル重要ワード抽出</title>
+        <link rel="stylesheet" href="./css/style.css">
+    </head>
+    <body>
+        <div class="containerC" id="top">
+            <h1>楽天商品タイトル重要ワード抽出</h1>
+            <p>入力したキーワードにヒットする商品タイトルのうち、主要なキーワードを抽出します。</p>
+            <form method="POST" enctype="text/plain">
+                <input id="sentence" type="text">  
+                <button id="button">送信</button> 
+            </form>
+        </div>
+        <div class="containerC" id="gray">
+            <h2 id="resultTitle">分析結果</h2>
+            <div id=load></div>
+            <p id="shortResult"></p>
+        </div>
+        <div id="table" class="containerR">
+            <table id="table1">
+                <caption id="caption">検索キーワード</caption>
+                <thead>
+                    <tr>
+                        <th>RANK</th>
+                        <th>SCORE</th>
+                        <th>KEYWORD 
+                            <form class="filterForm">
+                                <input class="filterInput" id="filterInput1">
+                                <button id="filterButton1">filter</button>
+                            </form>
+                            <button id="reverse1">↑↓</button>
+                            <button id="filterClear1">clear</button>
+                            <button id="save">save</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="resultTable">
+                </tbody>
+            </table>
+        </div>
+        <script src="./mainWithClass.js"></script>
+        <script src="./stateClass.js"></script>
+    </body>
+</html>
