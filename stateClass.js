@@ -1,3 +1,5 @@
+// 分析結果を保持・改変するクラス
+
 class State {
     constructor(){
         this.firstCaption = "検索キーワード"
@@ -6,6 +8,7 @@ class State {
         this.secondCaption = "";
         this.copyedResult = [];
         this.filteredCopyedResult = [];
+        this.shortResult = ""
     }
     // エラーメッセージを格納
     makeShortResult(message){ 

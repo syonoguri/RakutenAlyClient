@@ -1,3 +1,5 @@
+// stateとmainWithClassとに分ける前のjsファイル
+
 (function(){
     window.onload = function(){
         const req = new XMLHttpRequest();
