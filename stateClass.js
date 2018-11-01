@@ -1,4 +1,4 @@
-// 分析結果を保持・改変するクラス
+// 分析結果を保持・更新するクラス
 class State {
     constructor(){
         this.tableCaption = "検索キーワード"
@@ -23,7 +23,8 @@ class State {
 
     // 分析結果を配列に格納する
     // サーバから帰ってきた分析結果をanalysisResultにpushする
-    // 表示用のfilteredResultにanalysisResultをディープコピーし、表示用のメソッドを呼び出す
+    // 表示用のfilteredResultにanalysisResultをディープコピーし、
+    // filteredResultを用いる表示用のメソッドを呼び出す
     makeAnalysisResult(result){ 
         this.analysisResult = [];
         for(var i in result){
@@ -34,6 +35,7 @@ class State {
     };
 
     // 分析結果を複製する
+    // →２つ目のテーブルに表示するためのモノ
     save(){ 
         this.savedResult = this.analysisResult;
         this.savedTableCaption = this.tableCaption;
@@ -89,7 +91,7 @@ class State {
         vw.showSavedResult(this.savedFilteredResult);
     };
 
-    // フィルターと順番入れ替えを初期化する
+    // フィルターと順番入れ替えの効果を初期化する
     clearFilters(){
         this.makeFilteredResult("");
     }

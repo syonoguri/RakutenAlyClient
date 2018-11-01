@@ -127,7 +127,7 @@ ctrl.clearFiltersButton.addEventListener("click",function(e){
     state.clearFilters();
 })
 
-// ２つ目のテーブルにイベントリスナを設置するメソッド
+// ２つ目のテーブルのボタン等にイベントリスナを設置するメソッド
 ctrl.addCtrlEventListener = function(){
     ctrl.savedReverseButton = document.getElementById("savedReverseButton");
     ctrl.savedReverseButton.addEventListener("click",function(e){
@@ -158,7 +158,8 @@ vw.tables = document.getElementById("tables");
 vw.showErrorMessage = function(){
     vw.errorMessage.innerHTML = state.errorMessage;
 }
-vw.showResult = function(result){ // result1のtbodyを更新
+// １つ目のテーブルを更新
+vw.showResult = function(result){ 
     console.log(result); 
     let tableCaption = document.getElementById("caption")
     tableCaption.innerHTML = state.tableCaption;
@@ -180,7 +181,8 @@ vw.showResult = function(result){ // result1のtbodyを更新
         }
     }
 }
-vw.showSavedResult = function(result){ // result2のtableを作成
+// ２つ目のテーブルを作成・更新
+vw.showSavedResult = function(result){ 
     let oldtable = document.getElementById("savedTable"); 
     if(oldtable != null){ // 古い比較テーブルを削除
         oldtable.parentNode.removeChild(oldtable);
@@ -214,7 +216,7 @@ vw.showSavedResult = function(result){ // result2のtableを作成
     let savedTable = elt("table",{id:"savedTable"},savedTableCaption,thead,tbody);
     vw.tables.appendChild(savedTable);
 }
-// ローディング画面
+// ローディング画面を表示
 vw.loading = function(){
     const canvas = document.createElement("canvas");
     const table = document.getElementById("gray");
@@ -302,7 +304,7 @@ req.addEventListener("load",function(){
         state.makeAnalysisResult(apiResult);
     }
 })
-// 通信中に操作不能とする処理
+// 通信中にボタン操作を出来なくする処理
 req.onreadystatechange = function(){
     if(req.readyState == 1||2||3){
         ctrl.formButton.setAttribute("disabled",true);
