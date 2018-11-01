@@ -88,7 +88,6 @@ function generateCubicBezier(x1, y1, x2, y2, step) {
 /*------------------------------------------------------------------
 keywordAnalysisController:ユーザーの入力に対応し、stateメソッドもしくはreqメソッドを呼び出す。
 -------------------------------------------------------------------*/
-
 // サーバーに分析ワードを送るボタン
 keywordAnalysisController.formButton = $("#formButton");
 keywordAnalysisController.formButton.click(function(e){
