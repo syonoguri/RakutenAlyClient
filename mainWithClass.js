@@ -95,7 +95,7 @@ keywordAnalysisController.formButton.addEventListener("click",function(e){
     e.preventDefault();
     let inputedWord = document.getElementById("inputedWord").value;
     if(inputedWord.length<128){
-        KeywordAnalysisState.makeTableCaption(inputedWord);
+        keywordAnalysisState.makeTableCaption(inputedWord);
     }
     req.open("POST", "http://127.0.0.1:3000/form");
     req.setRequestHeader("content-type","application/x-www-form-urlencoded");
@@ -106,10 +106,10 @@ keywordAnalysisController.formButton.addEventListener("click",function(e){
 // テーブルを複製するボタン
 keywordAnalysisController.saveButton = document.getElementById("saveButton");
 keywordAnalysisController.saveButton.addEventListener("click",function(e){
-    if(KeywordAnalysisState.analysisResult.length == 0){
-        KeywordAnalysisState.makeErrorMessage("Error: 保存する結果がありません");
+    if(keywordAnalysisState.analysisResult.length == 0){
+        keywordAnalysisState.makeErrorMessage("Error: 保存する結果がありません");
     } else {
-        KeywordAnalysisState.save();
+        keywordAnalysisState.save();
         keywordAnalysisController.addCtrlEventListener();
     }
 });
@@ -117,7 +117,7 @@ keywordAnalysisController.saveButton.addEventListener("click",function(e){
 // テーブルの昇降順を逆にするボタン
 keywordAnalysisController.reverseButton = document.getElementById("reverseButton");
 keywordAnalysisController.reverseButton.addEventListener("click",function(e){
-    KeywordAnalysisState.revereseFilteredResult();
+    keywordAnalysisState.revereseFilteredResult();
 });
 
 // 特定のワードに部分一致するキーワードを抽出するボタン
@@ -126,14 +126,14 @@ keywordAnalysisController.filterButton.addEventListener("click",function(e){
     e.preventDefault();
     // 入力値は正規表現に用いられる
     let expWord = document.getElementById("expWord").value
-    KeywordAnalysisState.makeFilteredResult(expWord);
+    keywordAnalysisState.makeFilteredResult(expWord);
 });
 
 // フィルターと順番入れ替えを初期化するボタン
 keywordAnalysisController.clearFiltersButton = document.getElementById("clearFiltersButton");
 keywordAnalysisController.clearFiltersButton.addEventListener("click",function(e){
     e.preventDefault();
-    KeywordAnalysisState.clearFilters();
+    keywordAnalysisState.clearFilters();
 })
 
 // ２つ目のテーブルのボタン等にイベントリスナを設置するメソッド
@@ -141,19 +141,19 @@ keywordAnalysisController.addCtrlEventListener = function(){
     keywordAnalysisController.savedReverseButton = document.getElementById("savedReverseButton");
     keywordAnalysisController.savedReverseButton.addEventListener("click",function(e){
         e.preventDefault();
-        KeywordAnalysisState.revereseSavedFilteredResult();
+        keywordAnalysisState.revereseSavedFilteredResult();
         keywordAnalysisController.addCtrlEventListener();
     })
     keywordAnalysisController.savedFilterButton = document.getElementById("savedFilterButton");
     keywordAnalysisController.savedFilterButton.addEventListener("click",function(e){
         e.preventDefault();
         let expWord = document.getElementById("savedExpWord").value
-        KeywordAnalysisState.makeSavedFilteredResult(expWord);
+        keywordAnalysisState.makeSavedFilteredResult(expWord);
         keywordAnalysisController.addCtrlEventListener();
     });
     keywordAnalysisController.clearSavedFiltersButton = document.getElementById("clearSavedFiltersButton");
     keywordAnalysisController.clearSavedFiltersButton.addEventListener("click",function(e){
-        KeywordAnalysisState.makeSavedFilteredResult("");
+        keywordAnalysisState.makeSavedFilteredResult("");
         keywordAnalysisController.addCtrlEventListener();
     });
 };
@@ -165,13 +165,13 @@ keywordAnalysisViewer.errorMessage = document.getElementById("errorMessage");
 keywordAnalysisViewer.tbody = document.getElementById("tableBody");
 keywordAnalysisViewer.tables = document.getElementById("tables");
 keywordAnalysisViewer.showErrorMessage = function(){
-    keywordAnalysisViewer.errorMessage.innerHTML = KeywordAnalysisState.errorMessage;
+    keywordAnalysisViewer.errorMessage.innerHTML = keywordAnalysisState.errorMessage;
 }
 // １つ目のテーブルを更新
 keywordAnalysisViewer.showResult = function(result){ 
     console.log(result); 
     let tableCaption = document.getElementById("caption")
-    tableCaption.innerHTML = KeywordAnalysisState.tableCaption;
+    tableCaption.innerHTML = keywordAnalysisState.tableCaption;
     if(keywordAnalysisViewer.tbody.hasChildNodes){ // 既にある分析結果を削除
         while(this.tbody.firstChild){
             this.tbody.removeChild(this.tbody.firstChild);
@@ -221,7 +221,7 @@ keywordAnalysisViewer.showSavedResult = function(result){
     let tr2 = elt("tr",null,ths.th4,ths.th5,ths.th6);
     let thead = elt("thead",null,tr2);
     // 比較テーブルのキャプションを作成
-    let savedTableCaption = elt("caption",{id:"savedTableCaption"},KeywordAnalysisState.savedTableCaption); 
+    let savedTableCaption = elt("caption",{id:"savedTableCaption"},keywordAnalysisState.savedTableCaption); 
     let savedTable = elt("table",{id:"savedTable"},savedTableCaption,thead,tbody);
     keywordAnalysisViewer.tables.appendChild(savedTable);
 }
@@ -306,11 +306,11 @@ keywordAnalysisViewer.loading = function(){
 req.addEventListener("load",function(){
     let apiResult = req.response;
     if(typeof apiResult == "string"){
-        KeywordAnalysisState.makeErrorMessage(apiResult);
+        keywordAnalysisState.makeErrorMessage(apiResult);
     } else {
-        KeywordAnalysisState.makeErrorMessage("");
-        KeywordAnalysisState.makeTableCaption(document.getElementById("inputedWord").value);
-        KeywordAnalysisState.makeAnalysisResult(apiResult);
+        keywordAnalysisState.makeErrorMessage("");
+        keywordAnalysisState.makeTableCaption(document.getElementById("inputedWord").value);
+        keywordAnalysisState.makeAnalysisResult(apiResult);
     }
 })
 // 通信中にボタン操作を出来なくする処理

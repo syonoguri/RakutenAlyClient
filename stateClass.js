@@ -1,5 +1,5 @@
 // 分析結果を保持・更新するクラス
-class State {
+class KeywordAnalysisState {
     constructor(){
         this.tableCaption = "検索キーワード"
         this.analysisResult = [];
@@ -13,7 +13,7 @@ class State {
     // エラーメッセージを格納する
     makeErrorMessage(errorMessage){ 
         this.errorMessage = errorMessage;
-        vw.showErrorMessage();
+        keywordAnalysisViewer.showErrorMessage();
     };
 
     // 入力されたキーワードを格納する(テーブルのタイトル）
@@ -31,7 +31,7 @@ class State {
             this.analysisResult.push({score:result[i],keyword:i});
         }
         this.filteredResult = JSON.parse(JSON.stringify(this.analysisResult));
-        vw.showResult(this.filteredResult);
+        keywordAnalysisViewer.showResult(this.filteredResult);
     };
 
     // 分析結果を複製する
@@ -43,8 +43,8 @@ class State {
         this.savedFilteredResult = JSON.parse(JSON.stringify(this.filteredResult));
         this.filteredResult = JSON.parse(JSON.stringify(this.analysisResult));
         this.tableCaption = "検索キーワード";
-        vw.showResult(this.filteredResult);
-        vw.showSavedResult(this.savedFilteredResult);
+        keywordAnalysisViewer.showResult(this.filteredResult);
+        keywordAnalysisViewer.showSavedResult(this.savedFilteredResult);
     };
 
     // 結果を格納した配列の順番を逆にする
@@ -57,12 +57,12 @@ class State {
         console.log(JSON.parse(JSON.stringify(this.filteredResult)));
         console.log(this.analysisResult);
 
-        vw.showResult(this.filteredResult);
+        keywordAnalysisViewer.showResult(this.filteredResult);
     };
 
     revereseSavedFilteredResult(){
         this.savedFilteredResult.reverse();
-        vw.showSavedResult(this.savedFilteredResult);
+        keywordAnalysisViewer.showSavedResult(this.savedFilteredResult);
     };
 
     // 特定のワードに部分一致するキーワードを抽出しブラウザに表示する
@@ -77,7 +77,7 @@ class State {
                 this.filteredResult.push(i);
             }
         }
-        vw.showResult(this.filteredResult);
+        keywordAnalysisViewer.showResult(this.filteredResult);
     };
 
     makeSavedFilteredResult(filteringKeyword){
@@ -88,7 +88,7 @@ class State {
                 this.savedFilteredResult.push(i);
             }
         }
-        vw.showSavedResult(this.savedFilteredResult);
+        keywordAnalysisViewer.showSavedResult(this.savedFilteredResult);
     };
 
     // フィルターと順番入れ替えの効果を初期化する
@@ -97,4 +97,4 @@ class State {
     }
 }
 
-const state = new State();
+
