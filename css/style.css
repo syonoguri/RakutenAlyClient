@@ -77,17 +77,17 @@ button:hover {
 #gray{
     background-color: whitesmoke;
 }
-#shortResult{
+#errorMessage{
     color: black;
 }
-#button {
+#formButton {
     border: 1px solid gray;
     border-radius: 6px;
     font-weight: bold;
     padding: 6px 10px;
     font-size: 18px
 }
-#save, #reverse1, #reverse2, #filterButton1, #filterButton2, #filterClear1, #filterClear2{
+#saveButton, #reverseButton, #savedReverseButton, #filterButton, #savedFilterButton, #clearFiltersButton, #clearSavedFiltersButton{
     border: 1px solid gray;
     border-radius: 6px;
     padding: 3px 5px;

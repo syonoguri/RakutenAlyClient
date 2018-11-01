@@ -76,116 +76,15 @@ function generateCubicBezier(x1, y1, x2, y2, step) {
     }
 }
 
-// 分析結果を保持・改変するクラス
-class State {
-    constructor(){
-        this.tableCaption = "検索キーワード"
-        this.analysisResult = [];
-        this.filteredResult = [];
-        this.savedTableCaption = "";
-        this.savedResult = [];
-        this.savedFilteredResult = [];
-        this.errorMessage = ""
-    }
-
-    // エラーメッセージを格納する
-    makeErrorMessage(errorMessage){ 
-        this.errorMessage = errorMessage;
-        vw.showErrorMessage();
-    };
-
-    // 入力されたキーワードを格納する(テーブルのタイトル）
-    makeTableCaption(caption){ 
-        this.tableCaption = caption;
-    };
-
-    // 分析結果を配列に格納する
-    // サーバから帰ってきた分析結果をanalysisResultにpushする
-    // 表示用のfilteredResultにanalysisResultをディープコピーし、表示用のメソッドを呼び出す
-    makeAnalysisResult(result){ 
-        this.analysisResult = [];
-        for(var i in result){
-            this.analysisResult.push({score:result[i],keyword:i});
-        }
-        this.filteredResult = JSON.parse(JSON.stringify(this.analysisResult));
-        vw.showResult(this.filteredResult);
-    };
-
-    // 分析結果を複製する
-    save(){ 
-        this.savedResult = this.analysisResult;
-        this.savedTableCaption = this.tableCaption;
-        this.analysisResult = [];
-        this.savedFilteredResult = JSON.parse(JSON.stringify(this.filteredResult));
-        this.filteredResult = JSON.parse(JSON.stringify(this.analysisResult));
-        this.tableCaption = "検索キーワード";
-        vw.showResult(this.filteredResult);
-        vw.updateResult2(this.savedFilteredResult);
-    };
-
-    // 結果を格納した配列の順番を逆にする
-    // →表の昇降順を逆にしてブラウザに表示する
-    revereseFilteredResult(){
-        console.log(JSON.parse(JSON.stringify(this.filteredResult)));
-        console.log(this.analysisResult);
-        // this.fil1.reverse();
-        this.filteredResult.reverse();
-        console.log(JSON.parse(JSON.stringify(this.filteredResult)));
-        console.log(this.analysisResult);
-
-        vw.showResult(this.filteredResult);
-    };
-
-    revereseSavedFilteredResult(){
-        this.savedFilteredResult.reverse();
-        vw.updateResult2(this.savedFilteredResult);
-    };
-
-    // 特定のワードに部分一致するキーワードを抽出しブラウザに表示する
-    makeFilteredResult(filteringKeyword){
-        this.filteredResult = [];
-        console.log("keyword");
-        let expObj = new RegExp(filteringKeyword);
-        for(let i of this.analysisResult){
-            if(expObj.test(i["keyword"])){
-                console.log(i["keyword"]);
-                console.log(this.filteredResult);
-                this.filteredResult.push(i);
-            }
-        }
-        vw.showResult(this.filteredResult);
-    };
-
-    makeSavedFilteredResult(filteringKeyword){
-        this.savedFilteredResult = [];
-        let expObj = new RegExp(filteringKeyword);
-        for(let i of this.savedResult){
-            if(expObj.test(i["keyword"])){
-                this.savedFilteredResult.push(i);
-            }
-        }
-        vw.updateResult2(this.savedFilteredResult);
-    };
-
-    // フィルターと順番入れ替えを初期化する
-    clearFilters(){
-        this.makeFilteredResult("");
-    }
-}
-
-const state = new State();
-
-
-
 /*------------------------------------------------------------------
 ctrl:ユーザーの入力に対応し、stateメソッドもしくはreqメソッドを呼び出す。
 -------------------------------------------------------------------*/
 
 // サーバーに分析ワードを送るボタン
-ctrl.formButton = document.getElementById("button");
+ctrl.formButton = document.getElementById("formButton");
 ctrl.formButton.addEventListener("click",function(e){
     e.preventDefault();
-    let inputedWord = document.getElementById("sentence").value;
+    let inputedWord = document.getElementById("inputedWord").value;
     if(inputedWord.length<128){
         state.makeTableCaption(inputedWord);
     }
@@ -196,7 +95,7 @@ ctrl.formButton.addEventListener("click",function(e){
 });
 
 // テーブルを複製するボタン
-ctrl.saveButton = document.getElementById("save");
+ctrl.saveButton = document.getElementById("saveButton");
 ctrl.saveButton.addEventListener("click",function(e){
     if(state.analysisResult.length == 0){
         state.makeErrorMessage("Error: 保存する結果がありません");
@@ -207,22 +106,22 @@ ctrl.saveButton.addEventListener("click",function(e){
 });
 
 // テーブルの昇降順を逆にするボタン
-ctrl.reverseButton = document.getElementById("reverse1");
+ctrl.reverseButton = document.getElementById("reverseButton");
 ctrl.reverseButton.addEventListener("click",function(e){
     state.revereseFilteredResult();
 });
 
 // 特定のワードに部分一致するキーワードを抽出するボタン
-ctrl.filterButton = document.getElementById("filterButton1");
+ctrl.filterButton = document.getElementById("filterButton");
 ctrl.filterButton.addEventListener("click",function(e){
     e.preventDefault();
     // 入力値は正規表現に用いられる
-    let expWord = document.getElementById("filterInput1").value
+    let expWord = document.getElementById("expWord").value
     state.makeFilteredResult(expWord);
 });
 
 // フィルターと順番入れ替えを初期化するボタン
-ctrl.clearFiltersButton = document.getElementById("filterClear1");
+ctrl.clearFiltersButton = document.getElementById("clearFiltersButton");
 ctrl.clearFiltersButton.addEventListener("click",function(e){
     e.preventDefault();
     state.clearFilters();
@@ -230,21 +129,21 @@ ctrl.clearFiltersButton.addEventListener("click",function(e){
 
 // ２つ目のテーブルにイベントリスナを設置するメソッド
 ctrl.addCtrlEventListener = function(){
-    ctrl.savedReverseButton = document.getElementById("reverse2");
+    ctrl.savedReverseButton = document.getElementById("savedReverseButton");
     ctrl.savedReverseButton.addEventListener("click",function(e){
         e.preventDefault();
         state.revereseSavedFilteredResult();
         ctrl.addCtrlEventListener();
     })
-    ctrl.savedFilterButton = document.getElementById("filterButton2");
+    ctrl.savedFilterButton = document.getElementById("savedFilterButton");
     ctrl.savedFilterButton.addEventListener("click",function(e){
         e.preventDefault();
-        let expWord = document.getElementById("filterInput2").value
+        let expWord = document.getElementById("savedExpWord").value
         state.makeSavedFilteredResult(expWord);
         ctrl.addCtrlEventListener();
     });
-    ctrl.clearSavedFilterButton = document.getElementById("filterClear2");
-    ctrl.clearSavedFilterButton.addEventListener("click",function(e){
+    ctrl.clearSavedFiltersButton = document.getElementById("clearSavedFiltersButton");
+    ctrl.clearSavedFiltersButton.addEventListener("click",function(e){
         state.makeSavedFilteredResult("");
         ctrl.addCtrlEventListener();
     });
@@ -253,9 +152,9 @@ ctrl.addCtrlEventListener = function(){
 /*------------------------------------------------------------------
 vw：stateに保存された状態を、ブラウザに出力する機能を持つ
 -------------------------------------------------------------------*/
-vw.errorMessage = document.getElementById("shortResult");
-vw.tbody = document.getElementById("resultTable");
-vw.tables = document.getElementById("table");
+vw.errorMessage = document.getElementById("errorMessage");
+vw.tbody = document.getElementById("tableBody");
+vw.tables = document.getElementById("tables");
 vw.showErrorMessage = function(){
     vw.errorMessage.innerHTML = state.errorMessage;
 }
@@ -281,14 +180,15 @@ vw.showResult = function(result){ // result1のtbodyを更新
         }
     }
 }
-vw.updateResult2 = function(result){ // result2のtableを作成
-    let oldtable = document.getElementById("table2"); 
+vw.showSavedResult = function(result){ // result2のtableを作成
+    let oldtable = document.getElementById("savedTable"); 
     if(oldtable != null){ // 古い比較テーブルを削除
         oldtable.parentNode.removeChild(oldtable);
     }
 
     let ths = {};
-    let tbody = elt("tbody",null,); // 比較テーブルの内容部分を作成
+    // 比較テーブルの内容部分を作成
+    let tbody = elt("tbody",null,); 
     let j = 1;
     for(let i of result){ // 
         ths.th1 = elt("th",null,`${j}`);
@@ -298,31 +198,32 @@ vw.updateResult2 = function(result){ // result2のtableを作成
         tbody.appendChild(tr);
         j++;
     }
-    ths.th4 = elt("th",null,"RANK"); // 比較テーブルの先頭行を作成
+    // 比較テーブルの先頭行を作成
+    ths.th4 = elt("th",null,"RANK"); 
     ths.th5 = elt("th",null,"SCORE");
-    let reverseButton = elt("button",{id:"reverse2"},"↑↓");
-    let filterInput2 = elt("input",{class:"filterInput",id:"filterInput2"})
-    let filterButton2 = elt("button",{id:"filterButton2"},"filter");
-    let filterForm2 = elt("form",{class:"filterForm"},filterInput2,filterButton2);
-    let filterClear2 = elt("button",{id:"filterClear2"},"clear");
-    ths.th6 = elt("th",null,"KEYWORD",filterForm2,reverseButton,filterClear2);
+    let reverseButton = elt("button",{id:"savedReverseButton"},"↑↓");
+    let savedExpWord = elt("input",{class:"filterInput",id:"savedExpWord"})
+    let savedFilterButton = elt("button",{id:"savedFilterButton"},"filter");
+    let filterForm2 = elt("form",{class:"filterForm"},savedExpWord,savedFilterButton);
+    let clearSavedFiltersButton = elt("button",{id:"clearSavedFiltersButton"},"clear");
+    ths.th6 = elt("th",null,"KEYWORD",filterForm2,reverseButton,clearSavedFiltersButton);
     let tr2 = elt("tr",null,ths.th4,ths.th5,ths.th6);
     let thead = elt("thead",null,tr2);
-
-    let caption2 = elt("caption",{id:"caption2"},state.savedTableCaption); // 比較テーブルのキャプションを作成
-    let table2 = elt("table",{id:"table2"},caption2,thead,tbody);
-    vw.tables.appendChild(table2);
+    // 比較テーブルのキャプションを作成
+    let savedTableCaption = elt("caption",{id:"savedTableCaption"},state.savedTableCaption); 
+    let savedTable = elt("table",{id:"savedTable"},savedTableCaption,thead,tbody);
+    vw.tables.appendChild(savedTable);
 }
 // ローディング画面
 vw.loading = function(){
     const canvas = document.createElement("canvas");
-    const table = document.getElementById("table")
+    const table = document.getElementById("gray");
     table.appendChild(canvas);
     var tableRect = table.getBoundingClientRect() ;
 
     // Canvasを画面いっぱいに表示する
     function onResize(){
-        var tabley = window.pageYOffset + tableRect.top ;
+        var tabley = tableRect.top ;
         canvas.width = innerWidth * devicePixelRatio;
         canvas.height = innerHeight * devicePixelRatio;
         canvas.style = `position: absolute; top:${tabley}px;left:0px;`
@@ -342,7 +243,7 @@ vw.loading = function(){
         render(t0);
         function render(t1){
             requestAnimationFrame(render);
-            ctx.fillStyle = "rgba(245,245,245,0.01)";
+            ctx.fillStyle = "rgba(0,0,0,0)";
             ctx.fillRect(0,0, canvas.width, canvas.height);
             draw(ctx, t1-t0);
         } 
@@ -351,12 +252,13 @@ vw.loading = function(){
     const easeInOut = generateCubicBezier(0.42, 0, 0.58, 1);
     function draw(ctx, t){
         ctx.save();
+        ctx.clearRect(0,0,innerWidth*devicePixelRatio,innerHeight*devicePixelRatio);
         const canvas = ctx.canvas;
         // Loading表示
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.font = devicePixelRatio*40+"px Courier,monospace";
-        ctx.fillStyle = "rgba(239,239,239,1)";
+        ctx.fillStyle = "black";
         ctx.fillText(
             "Loading",
             canvas.width / 2,
@@ -374,7 +276,7 @@ vw.loading = function(){
         ctx.translate(canvas.width / 2, canvas.height / 2);
         ctx.rotate(2 * Math.PI * phase3);
         ctx.arc(0,0,radius, PI2*x2, PI2*x1);
-        ctx.strokeStyle = "rgba(239,239,239,1)";
+        ctx.strokeStyle = "rgba(80,80,80,0.6)";
         ctx.lineWidth = radius / 8;
         ctx.lineCap = "round";
         ctx.stroke();
@@ -391,13 +293,13 @@ vw.loading = function(){
 // サーバーからデータを受け取った時の処理
 // 結果をstateに格納する
 req.addEventListener("load",function(){
-    let result = req.response;
-    if(typeof result == "string"){
-        state.makeErrorMessage(result);
+    let apiResult = req.response;
+    if(typeof apiResult == "string"){
+        state.makeErrorMessage(apiResult);
     } else {
         state.makeErrorMessage("");
-        state.makeTableCaption(document.getElementById("sentence").value);
-        state.makeAnalysisResult(result);
+        state.makeTableCaption(document.getElementById("inputedWord").value);
+        state.makeAnalysisResult(apiResult);
     }
 })
 // 通信中に操作不能とする処理
