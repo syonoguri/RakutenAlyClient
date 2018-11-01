@@ -278,7 +278,7 @@ vw.loading = function(){
         ctx.translate(canvas.width / 2, canvas.height / 2);
         ctx.rotate(2 * Math.PI * phase3);
         ctx.arc(0,0,radius, PI2*x2, PI2*x1);
-        ctx.strokeStyle = "rgba(80,80,80,0.6)";
+        ctx.strokeStyle = "rgba(80,80,80,0.8)";
         ctx.lineWidth = radius / 8;
         ctx.lineCap = "round";
         ctx.stroke();
