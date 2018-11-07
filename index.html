@@ -6,42 +6,43 @@
         <link rel="stylesheet" href="./css/style.css">
     </head>
     <body>
-        <div>
-            <h1>楽天商品タイトル重要ワード抽出</h1>
-            <p>入力したキーワードにヒットする商品タイトルのうち、主要なキーワードを抽出します。</p>
-            <form>
-                <input>  
-                <button> 
-            </form>
+        <div id="app">
+            <div>
+                <h1>楽天商品タイトル重要ワード抽出</h1>
+                <p>入力したキーワードにヒットする商品タイトルのうち、主要なキーワードを抽出します。</p>
+                <form>
+                    <input>  
+                    <button> 
+                </form>
+            </div>
+            <div>
+                <h2>分析結果</h2>
+                <p>{{ errorMessage }}</p>
+            </div>
+            <div>
+                <table>
+                    <caption>検索キーワード</caption>
+                    <thead>
+                        <tr>
+                            <th>RANK</th>
+                            <th>SCORE</th>
+                            <th>KEYWORD 
+                                <form>
+                                    <input>
+                                    <button>filter</button>
+                                </form>
+                                <button>↑↓</button>
+                                <button>clear</button>
+                                <button>save</button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div>
-            <h2>分析結果</h2>
-            <div></div>
-            <p></p>
-        </div>
-        <div>
-            <table>
-                <caption>検索キーワード</caption>
-                <thead>
-                    <tr>
-                        <th>RANK</th>
-                        <th>SCORE</th>
-                        <th>KEYWORD 
-                            <form>
-                                <input>
-                                <button>filter</button>
-                            </form>
-                            <button>↑↓</button>
-                            <button>clear</button>
-                            <button>save</button>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-        <script src="./stateClass.js"></script>
-        <script src="./mainWithClass.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="./main.js"></script>
     </body>
 </html>
