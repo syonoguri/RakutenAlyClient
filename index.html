@@ -6,38 +6,38 @@
         <link rel="stylesheet" href="./css/style.css">
     </head>
     <body>
-        <div class="containerC" id="top">
+        <div>
             <h1>楽天商品タイトル重要ワード抽出</h1>
             <p>入力したキーワードにヒットする商品タイトルのうち、主要なキーワードを抽出します。</p>
-            <form method="POST" enctype="text/plain">
-                <input id="inputedWord" type="text">  
-                <button id="formButton">送信</button> 
+            <form>
+                <input>  
+                <button> 
             </form>
         </div>
-        <div class="containerC" id="gray">
-            <h2 id="resultTitle">分析結果</h2>
-            <div id=load></div>
-            <p id="errorMessage"></p>
+        <div>
+            <h2>分析結果</h2>
+            <div></div>
+            <p></p>
         </div>
-        <div id="tables" class="containerR">
-            <table id="table1">
-                <caption id="caption">検索キーワード</caption>
+        <div>
+            <table>
+                <caption>検索キーワード</caption>
                 <thead>
                     <tr>
                         <th>RANK</th>
                         <th>SCORE</th>
                         <th>KEYWORD 
-                            <form class="filterForm">
-                                <input class="filterInput" id="expWord">
-                                <button id="filterButton">filter</button>
+                            <form>
+                                <input>
+                                <button>filter</button>
                             </form>
-                            <button id="reverseButton">↑↓</button>
-                            <button id="clearFiltersButton">clear</button>
-                            <button id="saveButton">save</button>
+                            <button>↑↓</button>
+                            <button>clear</button>
+                            <button>save</button>
                         </th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
+                <tbody>
                 </tbody>
             </table>
         </div>
