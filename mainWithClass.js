@@ -1,7 +1,4 @@
-
-const req = new XMLHttpRequest();
-
-// ユーザーの入力に対応し、keywordAnalysisStateメソッドもしくはreqメソッドを呼び出す。
+// ユーザーの入力に対応し、keywordAnalysisStateメソッドを呼び出す。
 const keywordAnalysisController = Object.create(null);
 
 // keywordAnalysisStateに保存された状態を、ブラウザに出力する機能を持つ
@@ -12,11 +9,11 @@ const keywordAnalysisState = new KeywordAnalysisState();
 
 // Nodeオブジェクトを作成する関数
 function elt(name,attributes) { 
-    var node = document.createElement(name);
+    var node = $(`<${name}>`);
     if(attributes) {
         for(var attr in attributes) {
             if(attributes.hasOwnProperty(attr)) {
-                node.setAttribute(attr,attributes[attr]);
+                node.attr(attr,attributes[attr]);
             }
         }
     }
@@ -25,10 +22,13 @@ function elt(name,attributes) {
         if( typeof child == "string"){
             child = document.createTextNode(child);
         }
-        node.appendChild(child);
+        node.append(child);
     }
     return node;
 }
+
+// サーバーとの通信の機能を持つ
+let apiRequest = {};
 
 // なめらかなアニメーションのための関数(ローディング画面で使用)
 function generateCubicBezier(x1, y1, x2, y2, step) {
@@ -86,7 +86,7 @@ function generateCubicBezier(x1, y1, x2, y2, step) {
 }
 
 /*------------------------------------------------------------------
-keywordAnalysisController:ユーザーの入力に対応し、stateメソッドもしくはreqメソッドを呼び出す。
+keywordAnalysisController:ユーザーの入力に対応し、stateメソッドを呼び出す。
 -------------------------------------------------------------------*/
 // サーバーに分析ワードを送るボタン
 keywordAnalysisController.formButton = $("#formButton");
@@ -96,26 +96,36 @@ keywordAnalysisController.formButton.click(function(e){
     if(inputedWord.length<128){
         keywordAnalysisState.makeTableCaption(inputedWord);
     }
-    req.open("POST", "http://127.0.0.1:3000/form");
-    req.setRequestHeader("content-type","application/x-www-form-urlencoded");
-    req.responseType="json";
-    req.send("sentence="+inputedWord);
+    // 通信中にボタンを押せなくする
+    keywordAnalysisController.formButton.attr("disabled");
+    keywordAnalysisController.saveButton.attr("disabled");
+    keywordAnalysisViewer.loading();
+
+    // サーバーに分析ワードを送信
+    apiRequest.rakutenAndYahoo = $.ajax({
+        url: "http://127.0.0.1:3000/form",
+        type: "post",
+        data:{
+            "sentence":inputedWord
+        }
+    })
+    // ボタンの機能を戻し、分析結果をstateに格納
+    .done((data) => {
+        let apiResult = data;
+        keywordAnalysisController.formButton.removeAttr("disabled");
+        keywordAnalysisController.saveButton.removeAttr("disabled");
+        if(typeof apiResult == "string"){
+            keywordAnalysisState.makeErrorMessage(apiResult);
+        } else {
+            keywordAnalysisState.makeErrorMessage("");
+            keywordAnalysisState.makeTableCaption($("#inputedWord").val());
+            keywordAnalysisState.makeAnalysisResult(apiResult);
+        }
+    });
 });
-// keywordAnalysisController.formButton = document.getElementById("formButton");
-// keywordAnalysisController.formButton.addEventListener("click",function(e){
-//     e.preventDefault();
-//     let inputedWord = document.getElementById("inputedWord").value;
-//     if(inputedWord.length<128){
-//         keywordAnalysisState.makeTableCaption(inputedWord);
-//     }
-//     req.open("POST", "http://127.0.0.1:3000/form");
-//     req.setRequestHeader("content-type","application/x-www-form-urlencoded");
-//     req.responseType="json";
-//     req.send("sentence="+inputedWord);
-// });
 
 // テーブルを複製するボタン
-keywordAnalysisController.saveButton = $("saveButton");
+keywordAnalysisController.saveButton = $("#saveButton");
 keywordAnalysisController.saveButton.click(function(e){
     e.preventDefault();
     if(keywordAnalysisState.analysisResult.length == 0){
@@ -125,55 +135,46 @@ keywordAnalysisController.saveButton.click(function(e){
         keywordAnalysisController.addCtrlEventListener();
     }
 });
-// keywordAnalysisController.saveButton = document.getElementById("saveButton");
-// keywordAnalysisController.saveButton.addEventListener("click",function(e){
-//     if(keywordAnalysisState.analysisResult.length == 0){
-//         keywordAnalysisState.makeErrorMessage("Error: 保存する結果がありません");
-//     } else {
-//         keywordAnalysisState.save();
-//         keywordAnalysisController.addCtrlEventListener();
-//     }
-// });
 
 // テーブルの昇降順を逆にするボタン
-keywordAnalysisController.reverseButton = document.getElementById("reverseButton");
-keywordAnalysisController.reverseButton.addEventListener("click",function(e){
+keywordAnalysisController.reverseButton = $("#reverseButton");
+keywordAnalysisController.reverseButton.click(function(e){
     keywordAnalysisState.revereseFilteredResult();
 });
 
 // 特定のワードに部分一致するキーワードを抽出するボタン
-keywordAnalysisController.filterButton = document.getElementById("filterButton");
-keywordAnalysisController.filterButton.addEventListener("click",function(e){
+keywordAnalysisController.filterButton = $("#filterButton");
+keywordAnalysisController.filterButton.click(function(e){
     e.preventDefault();
     // 入力値は正規表現に用いられる
-    let expWord = document.getElementById("expWord").value
+    let expWord = $("#expWord").val()
     keywordAnalysisState.makeFilteredResult(expWord);
 });
 
 // フィルターと順番入れ替えを初期化するボタン
-keywordAnalysisController.clearFiltersButton = document.getElementById("clearFiltersButton");
-keywordAnalysisController.clearFiltersButton.addEventListener("click",function(e){
+keywordAnalysisController.clearFiltersButton = $("#clearFiltersButton");
+keywordAnalysisController.clearFiltersButton.click(function(e){
     e.preventDefault();
     keywordAnalysisState.clearFilters();
 })
 
 // ２つ目のテーブルのボタン等にイベントリスナを設置するメソッド
 keywordAnalysisController.addCtrlEventListener = function(){
-    keywordAnalysisController.savedReverseButton = document.getElementById("savedReverseButton");
-    keywordAnalysisController.savedReverseButton.addEventListener("click",function(e){
+    keywordAnalysisController.savedReverseButton = $("#savedReverseButton");
+    keywordAnalysisController.savedReverseButton.click(function(e){
         e.preventDefault();
         keywordAnalysisState.revereseSavedFilteredResult();
         keywordAnalysisController.addCtrlEventListener();
     })
-    keywordAnalysisController.savedFilterButton = document.getElementById("savedFilterButton");
-    keywordAnalysisController.savedFilterButton.addEventListener("click",function(e){
+    keywordAnalysisController.savedFilterButton = $("#savedFilterButton");
+    keywordAnalysisController.savedFilterButton.click(function(e){
         e.preventDefault();
-        let expWord = document.getElementById("savedExpWord").value
+        let expWord = $("#savedExpWord").val()
         keywordAnalysisState.makeSavedFilteredResult(expWord);
         keywordAnalysisController.addCtrlEventListener();
     });
-    keywordAnalysisController.clearSavedFiltersButton = document.getElementById("clearSavedFiltersButton");
-    keywordAnalysisController.clearSavedFiltersButton.addEventListener("click",function(e){
+    keywordAnalysisController.clearSavedFiltersButton = $("#clearSavedFiltersButton");
+    keywordAnalysisController.clearSavedFiltersButton.click(function(e){
         keywordAnalysisState.makeSavedFilteredResult("");
         keywordAnalysisController.addCtrlEventListener();
     });
@@ -182,21 +183,19 @@ keywordAnalysisController.addCtrlEventListener = function(){
 /*------------------------------------------------------------------
 keywordAnalysisViewer：stateに保存された状態を、ブラウザに出力する機能を持つ
 -------------------------------------------------------------------*/
-keywordAnalysisViewer.errorMessage = document.getElementById("errorMessage");
-keywordAnalysisViewer.tbody = document.getElementById("tableBody");
-keywordAnalysisViewer.tables = document.getElementById("tables");
+keywordAnalysisViewer.errorMessage = $("#errorMessage");
+keywordAnalysisViewer.tbody = $("#tableBody");
+keywordAnalysisViewer.tables = $("#tables");
 keywordAnalysisViewer.showErrorMessage = function(){
-    keywordAnalysisViewer.errorMessage.innerHTML = keywordAnalysisState.errorMessage;
+    keywordAnalysisViewer.errorMessage.text(keywordAnalysisState.errorMessage);
 }
 // １つ目のテーブルを更新
 keywordAnalysisViewer.showResult = function(result){ 
     console.log(result); 
-    let tableCaption = document.getElementById("caption")
-    tableCaption.innerHTML = keywordAnalysisState.tableCaption;
-    if(keywordAnalysisViewer.tbody.hasChildNodes){ // 既にある分析結果を削除
-        while(this.tbody.firstChild){
-            this.tbody.removeChild(this.tbody.firstChild);
-        }
+    let tableCaption = $("#caption")
+    tableCaption.text(keywordAnalysisState.tableCaption);
+    if(keywordAnalysisViewer.tbody.has()){ // 既にある分析結果を削除
+        this.tbody.children().remove();
     }
     if(result != []){
         let ths = {}
@@ -206,28 +205,28 @@ keywordAnalysisViewer.showResult = function(result){
             ths.th2=elt("th",null,`${i["score"]}`);
             ths.th3=elt("th",null,`${i["keyword"]}`);
             let tr =elt("tr",null,ths.th1,ths.th2,ths.th3);
-            keywordAnalysisViewer.tbody.appendChild(tr);
+            keywordAnalysisViewer.tbody.append(tr);
             j++;
         }
     }
 }
 // ２つ目のテーブルを作成・更新
 keywordAnalysisViewer.showSavedResult = function(result){ 
-    let oldtable = document.getElementById("savedTable"); 
-    if(oldtable != null){ // 古い比較テーブルを削除
-        oldtable.parentNode.removeChild(oldtable);
+    let oldtable = $("#savedTable"); 
+    if(oldtable.has()){ // 古い比較テーブルを削除
+        oldtable.remove();
     }
 
     let ths = {};
     // 比較テーブルの内容部分を作成
-    let tbody = elt("tbody",null,); 
+    let tbody = elt("tbody",null); 
     let j = 1;
-    for(let i of result){ // 
+    for(let i of result){ 
         ths.th1 = elt("th",null,`${j}`);
         ths.th2 = elt("th",null,`${i["score"]}`);
         ths.th3 = elt("th",null,`${i["keyword"]}`);
         let tr = elt("tr",null,ths.th1,ths.th2,ths.th3);
-        tbody.appendChild(tr);
+        tbody.append(tr);
         j++;
     }
     // 比較テーブルの先頭行を作成
@@ -242,38 +241,36 @@ keywordAnalysisViewer.showSavedResult = function(result){
     let tr2 = elt("tr",null,ths.th4,ths.th5,ths.th6);
     let thead = elt("thead",null,tr2);
     // 比較テーブルのキャプションを作成
-    let savedTableCaption = elt("caption",{id:"savedTableCaption"},keywordAnalysisState.savedTableCaption); 
+    let savedTableCaption = elt("caption",{id:"savedTableCaption"},""+keywordAnalysisState.savedTableCaption); 
     let savedTable = elt("table",{id:"savedTable"},savedTableCaption,thead,tbody);
-    keywordAnalysisViewer.tables.appendChild(savedTable);
+    keywordAnalysisViewer.tables.append(savedTable);
 }
 // ローディング画面を表示
 keywordAnalysisViewer.loading = function(){
     const canvas = document.createElement("canvas");
-    const table = document.getElementById("gray");
-    table.appendChild(canvas);
-    var tableRect = table.getBoundingClientRect() ;
+    const table = $("#gray");
+    table.append(canvas);
 
     // Canvasを画面いっぱいに表示する
     function onResize(){
-        var tabley = tableRect.top ;
+        var tabley = table.offset().top;
         canvas.width = innerWidth * devicePixelRatio;
         canvas.height = innerHeight * devicePixelRatio;
         canvas.style = `position: absolute; top:${tabley}px;left:0px;`
     }
-    window.addEventListener("resize", onResize);
+    $(window).resize(onResize());
     onResize();
 
     requestAnimationFrame(function (t0) {
-        if(req.readyState == 4){
-            let canvass = document.getElementsByTagName("canvas");
-            console.log(canvass)
-            canvass[0].parentNode.removeChild(canvass[0]);
-            canvass[0].parentNode.removeChild(canvass[0]);
-            return;
-        }
         const ctx = canvas.getContext("2d");
         render(t0);
         function render(t1){
+            if(apiRequest.rakutenAndYahoo.readyState == 4){
+                let canvass = $("canvas");
+                console.log(canvass)
+                canvass.remove();
+                return;
+            }
             requestAnimationFrame(render);
             ctx.fillStyle = "rgba(0,0,0,0)";
             ctx.fillRect(0,0, canvas.width, canvas.height);
@@ -317,32 +314,4 @@ keywordAnalysisViewer.loading = function(){
 };
 
 
-/*------------------------------------------------------------------
-　req: サーバーとの通信を行う部分。サーバーからのレスポンスが来た場合は
-    　 stateメソッドを呼び出しそのデータを保存する。
--------------------------------------------------------------------*/
 
-// サーバーからデータを受け取った時の処理
-// 結果をstateに格納する
-req.addEventListener("load",function(){
-    let apiResult = req.response;
-    if(typeof apiResult == "string"){
-        keywordAnalysisState.makeErrorMessage(apiResult);
-    } else {
-        keywordAnalysisState.makeErrorMessage("");
-        keywordAnalysisState.makeTableCaption(document.getElementById("inputedWord").value);
-        keywordAnalysisState.makeAnalysisResult(apiResult);
-    }
-})
-// 通信中にボタン操作を出来なくする処理
-req.onreadystatechange = function(){
-    if(req.readyState == 1||2||3){
-        keywordAnalysisController.formButton.attr("disabled",true);
-        keywordAnalysisController.saveButton.attr("disabled",true);
-        keywordAnalysisViewer.loading();
-    }
-    if(req.readyState == 0||4){
-        keywordAnalysisController.formButton.removeAttr("disabled");
-        keywordAnalysisController.saveButton.removeAttr("disabled");
-    }
-}

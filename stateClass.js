@@ -45,18 +45,13 @@ class KeywordAnalysisState {
         this.tableCaption = "検索キーワード";
         keywordAnalysisViewer.showResult(this.filteredResult);
         keywordAnalysisViewer.showSavedResult(this.savedFilteredResult);
+        console.log(this.savedFilteredResult);
     };
 
     // 結果を格納した配列の順番を逆にする
     // →表の昇降順を逆にしてブラウザに表示する
     revereseFilteredResult(){
-        console.log(JSON.parse(JSON.stringify(this.filteredResult)));
-        console.log(this.analysisResult);
-        // this.fil1.reverse();
         this.filteredResult.reverse();
-        console.log(JSON.parse(JSON.stringify(this.filteredResult)));
-        console.log(this.analysisResult);
-
         keywordAnalysisViewer.showResult(this.filteredResult);
     };
 
