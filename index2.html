@@ -10,16 +10,35 @@
             <div>
                 <h1>楽天商品タイトル重要ワード抽出</h1>
                 <p>入力したキーワードにヒットする商品タイトルのうち、主要なキーワードを抽出します。</p>
-                <analyze-form></analyze-form>
+                <form>
+                    <input type="text" v-model="inputedWord">
+                    <button @click.prevent="submitToApi"></button>
+                </form>
             </div>
             <div>
                 <h2>分析結果</h2>
                 <p>{{ errorMessage }}</p>
             </div>
-            <result-table></result-table>
+            <table>
+                <caption></caption>
+                <thead>
+                    <tr>
+                        <th>RANK</th>
+                        <th>SCORE</th>
+                        <th>KEYWORD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="result in analysisResult">
+                        <td>{{ result.rank }}</td>
+                        <td>{{ result.score }}</td>
+                        <td>{{ result.keyword }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios@0.17.1/dist/axios.min.js"></script>
-        <script src="./main.js"></script>
+        <script src="./main2.js"></script>
     </body>
 </html>
