@@ -2,8 +2,13 @@ var app = new Vue({
     el: "#app",
     data:{
         errorMessage: "",
-        apiResult: {aa:"aa"},
-        inputedWord: ""
+        apiResult: {},
+        escapeApiResult: {},
+        savedResult: {},
+        escapeApiResult: {},
+        inputedWord: "",
+        filterWord:"",
+        saved: false
     },
     computed:{
         analysisResult: function(){
@@ -13,8 +18,15 @@ var app = new Vue({
                 obj.push({rank:j,score:this.apiResult[i],keyword:i})
                 j++
             }
+            if(this.filterWord){
+                obj = obj.filter(
+                    function(value){
+                        let sentence = new RegExp(app.filterWord);
+                        return sentence.test(value["keyword"]);
+                }, app);
+            }
             return obj;
-        }
+        },
     },
     methods:{
         submitToApi: function(){
@@ -28,7 +40,18 @@ var app = new Vue({
                     } else {
                         console.log(app.apiResult);
                     }
-                })}
+                })},
+        filteringKeyword: function(){
+            
+        },
+        clearFilters: function(){
+
+        },
+        saveResult: function(){
+            this.savedResult = Object.assign({},this.analysisResult);
+            this.apiResult = {};
+            this.saved = true;
+        }
     }
 
 })
