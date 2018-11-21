@@ -7,67 +7,64 @@
     </head>
     <body>
         <div id="app">
-            <div>
+            <div id="topContainer">
                 <h1>楽天商品タイトル重要ワード抽出</h1>
                 <p>入力したキーワードにヒットする商品タイトルのうち、主要なキーワードを抽出します。</p>
                 <form>
-                    <input type="text" v-model="inputedWord">
-                    <button @click.prevent="submitToApi"></button>
+                    <input id="topInput" type="text" v-model="inputedWord">
+                    <button id="topFormButton" @click.prevent="submitToApi" @click="loadingCircle">送信</button>
                 </form>
             </div>
-            <div>
-                <h2>分析結果</h2>
-                <p>{{ errorMessage }}</p>
-            </div>
-            <table>
-                <caption></caption>
-                <thead>
-                    <tr>
-                        <th>RANK</th>
-                        <th>SCORE</th>
-                        <th>KEYWORD
-                            <form>
-                            <input type="text" v-model="filterWord">
-                            <button @click.prevent="filteringKeyword"></button>
-                            <button @click.prevent="reverseResult">↑↓</button>
-                            <button @click.prevent="clearFilters">clear</button>
-                            <button @click.prevent="saveResult">save</button>
-                        </form></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="result in analysisResult" :key="result.rank">
-                        <td>{{ result.rank }}</td>
-                        <td>{{ result.score }}</td>
-                        <td>{{ result.keyword }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div v-if="saved">
+            <h2>分析結果</h2>
+            <p>{{ errorMessage }}</p>
+            <canvas v-show="canvasSwitch" ref="canvas" :style="canvasObject" :width="canvasWidth" :height="canvasHeight"></canvas>
+            <div id="resultContainer" ref="tables">
                 <table>
-                    <caption></caption>
+                    <caption>{{ resultCaption }}</caption>
                     <thead>
                         <tr>
                             <th>RANK</th>
                             <th>SCORE</th>
                             <th>KEYWORD
-                                <form>
-                                <input type="text" v-model="filterWord">
-                                <button @click.prevent="filteringKeyword"></button>
-                                <button @click.prevent="reverseResult">↑↓</button>
-                                <button @click.prevent="clearFilters">clear</button>
-                                </form>
-                            </th>
+                                <form class="filterForm">
+                            <input type="text" v-model="filterWord" placeholder="フィルター">
+                                <button class="smallButton" @click.prevent="reverseResult">↑↓</button>
+                                <button class="smallButton" @click.prevent="saveResult">save</button>
+                            </form></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="result in savedResult" :key="result.rank">
+                        <tr v-for="result in computedAnalysisResult" :key="result.rank">
                             <td>{{ result.rank }}</td>
                             <td>{{ result.score }}</td>
                             <td>{{ result.keyword }}</td>
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="saved">
+                    <table>
+                        <caption>{{ savedResultCaption }}</caption>
+                        <thead>
+                            <tr>
+                                <th>RANK</th>
+                                <th>SCORE</th>
+                                <th>KEYWORD
+                                    <form class="filterForm">
+                                    <input type="text" v-model="savedFilterWord" placeholder="フィルター">
+                                    <button class="smallButton" @click.prevent="reverseSavedResult">↑↓</button>
+                                    </form>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="sResult in computedSavedAnalysisResult" :key="sResult.rank">
+                                <td>{{ sResult.rank }}</td>
+                                <td>{{ sResult.score }}</td>
+                                <td>{{ sResult.keyword }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/vue"></script>
