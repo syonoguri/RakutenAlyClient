@@ -68,19 +68,21 @@ var app = new Vue({
         this.ctx = this.$refs.canvas.getContext("2d");
     },
     methods:{
-        submitToApi: function(){
+        submitToApi: ()=>{
+            console.log(this);
             let data = "sentence="+this.inputedWord;
-            app.errorMessage = "";
-            app.resultCaption = JSON.parse(JSON.stringify(app.inputedWord));
+            this.errorMessage = "";
+            this.resultCaption = JSON.parse(JSON.stringify(this.inputedWord));
             axios
                 .post("http://127.0.0.1:3000/form",data)
-                .then(function(response) {
+                .then((response)=> {
+                    console.log(this)
                     if(typeof response.data == "string"){
-                        app.errorMessage = response.data;
+                        this.errorMessage = response.data;
                     } else {
-                        app.analysisResult = response.data;
+                        this.analysisResult = response.data;
                     }
-                    app.canvasSwitch = false;
+                    this.canvasSwitch = false;
                 })},
         saveResult: function(){
             this.savedAnalysisResult = Object.assign({},this.analysisResult);
