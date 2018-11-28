@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
+    <Top/>
+    <Tables/>
   </div>
 </template>
 
-<script>
-import HelloWorld from './components/HelloWorld'
 
+<script>
+import Top from '@/components/Top.vue'
+import Tables from '@/components/Tables.vue'
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Top,
+    Tables
   }
 }
 </script>
