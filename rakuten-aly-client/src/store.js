@@ -29,29 +29,33 @@ const store = new Vuex.Store({
             state.errorMessage = payload;
         },
         updateAnalysisResult(state, payload){
-            state.analysisResult = payload
+            state.analysisResult = payload;
+        },
+        updateFilterWord(state, payload){
+            state.filterWord = payload;
+        },
+        updateSavedFilterWord(state, payload){
+            state.savedFilterWord = payload;
         },
         switchSaved(state){
             state.savedAnalysisResult = JSON.parse(JSON.stringify(state.analysisResult))
-            if(state.saved){
-                state.saved = false;
-            } else {
+            if(!state.saved){
                 state.saved = true;
             }
         },
         switchReverse(state, ifSavedTable){
             console.log(state.analysisResult);
             if(!ifSavedTable) {
-                if(ifReverseAnalysisResult){
-                    ifReverseAnalysisResult = false;
+                if(state.ifReverseAnalysisResult){
+                    state.ifReverseAnalysisResult = false;
                 } else {
-                    ifReverseAnalysisResult = true;
+                    state.ifReverseAnalysisResult = true;
                 }
             } else {
-                if(ifReverseSavedAnalysisResult){
-                    ifReverseSavedAnalysisResult = false;
+                if(state.ifReverseSavedAnalysisResult){
+                    state.ifReverseSavedAnalysisResult = false;
                 } else {
-                    ifReverseSavedAnalysisResult = true;
+                    state.ifReverseSavedAnalysisResult = true;
                 }
             }
         }
@@ -79,9 +83,9 @@ const store = new Vuex.Store({
         savedComputedAnalysisResult(state){
             let viewResult = []
               let j = 1;
-              let sentence = new RegExp(state.filterWord)
+              let sentence = new RegExp(state.savedFilterWord)
               for(let i in state.savedAnalysisResult){
-                  if(state.filterWord){
+                  if(state.savedFilterWord){
                       if(!sentence.test(i)){
                           continue;
                       }

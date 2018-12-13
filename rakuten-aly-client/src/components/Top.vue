@@ -20,3 +20,31 @@ export default {
   }
 }
 </script>
+
+<style>
+.top{
+    margin:0 auto 0 auto;
+    padding-bottom: 20px;
+    display: flex;
+    flex-flow: column;
+    background-color: brown; 
+    color:white;
+}
+input{
+    box-sizing: border-box;
+}
+input{
+    margin: auto;
+    padding: 0.5em;
+    width: 55%;
+    font-size:16px;
+}
+form {
+    padding:16px;
+    margin: auto;
+}
+
+input:focus{
+    background-color: #faf3f3;
+}
+</style>
