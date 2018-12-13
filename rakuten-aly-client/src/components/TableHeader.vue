@@ -7,7 +7,7 @@
                 <form>
                     <input>
                 </form>
-                <button>↑↓</button>
+                <button @click.prevent="switchReverse">↑↓</button>
                 <button v-if="val" @click.prevent="switchSaved">save</button>
             </th>
         </tr>
@@ -20,7 +20,15 @@ export default {
     name: 'TableHeader',
     methods: {
         switchSaved(){
-            this.$store.commit("switchSaved")
+            this.$store.commit("switchSaved");
+        },
+        switchReverse(){
+            if(this.val){
+                this.$store.commit("switchReverse","");
+            } else {
+                this.$store.commit("switchReverse",true);
+            }
+            
         }
     }
 }

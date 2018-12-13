@@ -17,7 +17,7 @@ export default {
             if(this.val){
                 return this.$store.getters.computedAnalysisResult
             } else if(this.$store.state.saved) {
-                return JSON.parse(JSON.stringify(this.$store.getters.computedAnalysisResult))
+                return JSON.parse(JSON.stringify(this.$store.getters.savedComputedAnalysisResult))
             }
         }
     }

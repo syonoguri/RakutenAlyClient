@@ -13,12 +13,13 @@ const store = new Vuex.Store({
         errorMessage: "",
         resultCaption: "検索キーワード",
         savedResultCaption: "",
-        analysisResult: {},
-        savedAnalysisResult: {},
+        analysisResult: [],
+        savedAnalysisResult: [],
         filterWord:"",
         savedFilterWord:"",
         saved: false,
-        reverse: false,
+        ifReverseAnalysisResult: false,
+        ifReverseSavedAnalysisResult: false
     },
     mutations: {
         updateInputedWord(state, payload){
@@ -37,6 +38,22 @@ const store = new Vuex.Store({
             } else {
                 state.saved = true;
             }
+        },
+        switchReverse(state, ifSavedTable){
+            console.log(state.analysisResult);
+            if(!ifSavedTable) {
+                if(ifReverseAnalysisResult){
+                    ifReverseAnalysisResult = false;
+                } else {
+                    ifReverseAnalysisResult = true;
+                }
+            } else {
+                if(ifReverseSavedAnalysisResult){
+                    ifReverseSavedAnalysisResult = false;
+                } else {
+                    ifReverseSavedAnalysisResult = true;
+                }
+            }
         }
     },
     getters:{
@@ -53,11 +70,30 @@ const store = new Vuex.Store({
                   viewResult.push({rank:j,score:state.analysisResult[i],keyword:i})
                   j++
               }
-              if(state.reverse){
+              if(state.ifReverseAnalysisResult){
                   viewResult.reverse();
               }
               return viewResult;
-            }
+        },
+
+        savedComputedAnalysisResult(state){
+            let viewResult = []
+              let j = 1;
+              let sentence = new RegExp(state.filterWord)
+              for(let i in state.savedAnalysisResult){
+                  if(state.filterWord){
+                      if(!sentence.test(i)){
+                          continue;
+                      }
+                  }
+                  viewResult.push({rank:j,score:state.savedAnalysisResult[i],keyword:i})
+                  j++
+              }
+              if(state.ifReverseSavedAnalysisResult){
+                  viewResult.reverse();
+              }
+              return viewResult;
+        }
     },
     actions:{
         submitToApi(){
