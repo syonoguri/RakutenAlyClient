@@ -19,7 +19,8 @@ const store = new Vuex.Store({
         savedFilterWord:"",
         saved: false,
         ifReverseAnalysisResult: false,
-        ifReverseSavedAnalysisResult: false
+        ifReverseSavedAnalysisResult: false,
+        loading: false
     },
     mutations: {
         updateInputedWord(state, payload){
@@ -36,6 +37,19 @@ const store = new Vuex.Store({
         },
         updateSavedFilterWord(state, payload){
             state.savedFilterWord = payload;
+        },
+        updateResultCaption(state,payload){
+            state.resultCaption = payload;
+        },
+        updateSavedResultCaputon(state,payload){
+            state.savedResultCaption = payload;
+        },
+        switchLoading(state){
+            if(!state.loading){
+                state.loading = true;
+            } else{
+                state.loading = false;
+            }
         },
         switchSaved(state){
             state.savedAnalysisResult = JSON.parse(JSON.stringify(state.analysisResult))
@@ -101,9 +115,10 @@ const store = new Vuex.Store({
     },
     actions:{
         submitToApi(){
+            this.commit("switchLoading")
             let data = "sentence="+this.state.inputedWord;
             this.commit("updateErrorMessage","")
-            this.state.resultCaption = JSON.parse(JSON.stringify(this.state.inputedWord));
+            this.commit("updateResultCaption",(JSON.parse(JSON.stringify(this.state.inputedWord))));
             axios
                 .post("http://127.0.0.1:3000/form",data)
                 .then((response)=> {
@@ -112,6 +127,7 @@ const store = new Vuex.Store({
                     } else {
                         this.commit("updateAnalysisResult",response.data)
                     }
+                    this.commit("switchLoading")
                 })
         }
     }

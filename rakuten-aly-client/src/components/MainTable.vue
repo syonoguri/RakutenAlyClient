@@ -1,7 +1,7 @@
 <template>
     <div class="maintable">
         <table>
-            <caption>検索キーワード</caption>
+            <caption>{{resultCaption}}</caption>
             <TableHeader val="maintable"/>
             <TableBody val="maintable"/>
         </table>
@@ -16,6 +16,18 @@ export default {
     components: {
         TableHeader,
         TableBody
+    },
+    computed:{ 
+        resultCaption(){
+            return this.$store.state.resultCaption;
+        }
     }
 }
 </script>
+
+<style scoped>
+div {
+    margin:0 auto 0 auto;
+}
+
+</style>

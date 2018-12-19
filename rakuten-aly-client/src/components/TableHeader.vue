@@ -4,8 +4,8 @@
             <th>RANK</th>
             <th>SCORE</th>
             <th>KEYWORD 
-                <form>
-                    <input v-model="filterWord">
+                <form class="filterForm">
+                    <input v-model="filterWord" class="filterInput">
                 </form>
                 <button @click.prevent="switchReverse">↑↓</button>
                 <button v-if="val" @click.prevent="switchSaved">save</button>
@@ -20,6 +20,13 @@ export default {
     name: 'TableHeader',
     computed: {
         filterWord: {
+            get(){
+                if(this.val){
+                    return this.$store.state.filterWord;
+                } else {
+                    return this.$store.state.savedFilterWord;
+                }
+            },
             set(value){
                 if(this.val){
                     this.$store.commit("updateFilterWord",value)
@@ -34,6 +41,7 @@ export default {
     methods: {
         switchSaved(){
             this.$store.commit("switchSaved");
+            this.$store.commit("updateSavedResultCaputon",JSON.parse(JSON.stringify(this.$store.state.resultCaption)))
         },
         switchReverse(){
             if(this.val){
@@ -57,12 +65,10 @@ button{
 }
 form{
     display: inline-block;
-    padding: 0;
+    padding: 16px;
     font-size: 12px;
-    width: 200px;
 }
 input{
     width:75%;
-    height: 18px;
 }
 </style>

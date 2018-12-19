@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Top/>
+    <ResultTitle/>
     <Tables/>
   </div>
 </template>
@@ -9,10 +10,12 @@
 <script>
 import Top from '@/components/Top.vue'
 import Tables from '@/components/Tables.vue'
+import ResultTitle from '@/components/ResultTitle.vue'
 export default {
   name: 'App',
   components: {
     Top,
+    ResultTitle,
     Tables
   }
 }
@@ -25,7 +28,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 html{
     font-size: 15px;
@@ -43,14 +45,13 @@ h2{
     color: black;
 }
 form {
-    padding:16px;
+    margin:16px;
 }
 input{
     box-sizing: border-box;
 }
 input{
     margin: auto;
-    padding: 0.5em;
     width: 55%;
     font-size:16px;
 }
@@ -81,5 +82,20 @@ button:hover {
     cursor: pointer;
     background-color: #faf3f3;
 }
+.filterForm {
+    display: inline-block;
+    padding: 1px;
+    font-size: 12px;
+    width: 200px;
+}
+.filterInput{
+    width:90%;
+    height: 18px;
+}
 
+@media only screen and (max-width: 1000px){
+    html{
+        font-size: 14px;
+    }
+}
 </style>

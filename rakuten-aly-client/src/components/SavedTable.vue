@@ -1,7 +1,7 @@
 <template>
     <div class="savedtable" v-show="this.$store.state.saved">
         <table>
-            <caption>検索キーワード</caption>
+            <caption>{{savedResultCaption}}</caption>
             <TableHeader/>
             <TableBody/>
         </table>
@@ -16,6 +16,17 @@ export default {
     components: {
         TableHeader,
         TableBody
-    }
+    },
+    computed:{
+        savedResultCaption(){
+            return this.$store.state.savedResultCaption;
+        }
+    },
 }
 </script>
+
+<style scoped>
+div {
+    margin:0 auto 0 auto;
+}
+</style>

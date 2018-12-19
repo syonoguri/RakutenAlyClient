@@ -31,17 +31,16 @@ export default {
     color:white;
 }
 input{
-    box-sizing: border-box;
-}
-input{
     margin: auto;
     padding: 0.5em;
     width: 55%;
     font-size:16px;
+    box-sizing: border-box;
 }
 form {
     padding:16px;
     margin: auto;
+    width: 75%;
 }
 
 input:focus{
